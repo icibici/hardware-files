@@ -1,0 +1,35 @@
+20 Aug 2018
+
+LTspice simulation on eeg4.asc
+* probe on JFET output or on VN015 shows flat voltage after just more than 12 seconds (Edit Simulation Cmd to set upper time limit to 20s)
+** Richard happy w this
+* AC analysis simulation (linear, 10k points) on VN015 [line between C5 and R11] shows output in 6-72bD range
+** Richard thinks VO610A should work [the info after the hyphen is about physical configuration, not electronic properties]
+** see datasheet at https://www.vishay.com/docs/81775/vo610a.pdf
+* will place VO610A downstream (to the right in .asc file) of C5 to isolate the phone's input / prevent bypass channel
+
+breadboarding/physical
+* will unsolder C5, and place one of the opto-couplers on the board
+* using the VO610A-2 to avoid opening a package of opto-isolators
+* on VO610 board, dot is by pin 1
+* Richard discovers:
+** LTspice .asc file is an approximation relative to the actual PCB due to wiring
+** thinks GND is in an 'odd place', but is common
+** actually, no problem: we're using a TRRS, but he's used to TRS.  Our config is CTIA/Apple = T (left), R (right), R (ground), S (mike)
+* analysis:
+** add battery
+** stupidity tests:
+*** Q: are there 9V on the mike cable? A: no (~ 0V)
+** plugging straight into laptop, as Line In: Spec Anal doesn't show anything
+** plugging straight into laptop, as Mike In: success [need to also run 1kHz signal on generator]
+*** now using TrueRTA: thinks is detecting heartbeat OK
+
+21 Aug 2018
+
+LTspice simulation
+* https://electronics.stackexchange.com/questions/235530/using-spice-pspice-vishay-optocoupler-models-in-ltspice suggests LargeCollection.zip
+** lib/sym/OptoElec seems best directory, but I can't see the Vishay VO610
+** downloaded from https://www.vishay.com/how/design-support-tools/
+
+my homework: 
+1. update the .asc file (now eeg5-opto-isolation.asc) as per Richard's paper edits
